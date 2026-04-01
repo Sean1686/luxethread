@@ -1,10 +1,10 @@
 {
-	"name": "nestars",
+	"name": "nestar",
 	"version": "0.0.1",
-	"description": "",
-	"author": "",
+	"description": "This is Nestar backend application",
+	"author": "Xudoyberdi",
 	"private": true,
-	"license": "ITC",
+	"license": "MIT",
 	"scripts": {
 		"build": "nest build",
 		"format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
@@ -90,5 +90,6 @@
 		"roots": [
 			"<rootDir>/apps/"
 		]
-	}
+	},
+	"main": "index.js"
 }
