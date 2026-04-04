@@ -1,8 +1,8 @@
 {
 	"name": "nestar",
 	"version": "0.0.1",
-	"description": "This is Nestar backend application",
-	"author": "Xudoyberdi",
+	"description": "",
+	"author": "",
 	"private": true,
 	"license": "MIT",
 	"scripts": {
@@ -10,10 +10,10 @@
 		"format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
-		"start:dev:batch": "nest start nestars-batch --watch",
+		"start:dev:batch": "nest start nestar-batch --watch",
 		"start:debug": "nest start --debug --watch",
-		"start:prod": "node dist/apps/nestars-api/main",
-		"start:prod:batch": "node dist/apps/nestars-batch/main",
+		"start:prod": "NODE_ENV=production node dist/apps/nestar-api/main",
+		"start:prod:batch": "NODE_ENV=production node dist/apps/nestar-batch/main",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",
@@ -90,6 +90,5 @@
 		"roots": [
 			"<rootDir>/apps/"
 		]
-	},
-	"main": "index.js"
+	}
 }
