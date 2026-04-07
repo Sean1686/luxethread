@@ -16,5 +16,7 @@ export enum Messages{
     NOT_ALLOWED_REQUEST = "Not allowed",
     PROVIDE_VALID_DATA = "Please provide valid data",
     SEKF_SUBSCRIPTION_DENIED = "Self subscription is not allowed",
+	MEMBER_NOT_FOUND = "MEMBER_NOT_FOUND",
+	MEMBER_BLOCKED = "MEMBER_BLOCKED",
     
 }
