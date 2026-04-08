@@ -21,12 +21,9 @@ import { T } from './libs/types/common';
 				console.error('GraphQL Error:', error);
 				const graphQLFormattedError = {
 					code: error?.extensions.code,
-					message:
-						error?.extensions?.exception?.response?.message ||
-						error?.extensions?.message ||
-						error?.message
+					message: error?.extensions?.exception?.response?.message || error?.extensions?.message || error?.message,
 				};
-        console.log("GRAPHQL GLOBAL ERROR:", graphQLFormattedError);
+				console.log('GRAPHQL GLOBAL ERROR:', graphQLFormattedError);
 				return graphQLFormattedError;
 			},
 		}),
