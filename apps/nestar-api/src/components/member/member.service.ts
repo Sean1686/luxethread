@@ -5,6 +5,7 @@ import { LoginInput, MemberInput } from '../../libs/DTO/member/member.input';
 import { Member } from '../../libs/DTO/member/member';
 import { MemberStatus } from '../../libs/enums/member.enum';
 import { Messages } from '../../libs/enums/common.enum';
+import { error } from 'console';
 
 @Injectable()
 export class MemberService {
@@ -13,21 +14,21 @@ export class MemberService {
 	public async signup(input: MemberInput): Promise<Member> {
 		//  TODO: Implement Hash password
 
-            try {
-                const result = await this.memberModel.create(input);
-                // TODO: Authentication via Token
-                console.log("Member created successfully:", result);
-                return result;
-            } catch (error) {
-                console.error("Error occurred while creating member:", error);
-                throw new BadRequestException(error);
-            }
+			try {
+				const result = await this.memberModel.create(input);
+				// TODO: Authentication via Token
+				console.log("Member created successfully:", result);
+				return result;
+			} catch (err) {
+				console.log("Error occurred while creating member:", (err as Error).message );
+				throw new BadRequestException(Messages.USED_MEMBER_NICK_OR_PHONE);
+			}
 	}
 
 	public async login(input: LoginInput): Promise<Member> {
-		const {memberNickname, memberPassword} = input;
+		const {memberNick, memberPassword} = input;
 		const response = await this.memberModel
-		.findOne({ memberNickname: memberNickname })
+		.findOne({ memberNick: memberNick })
 		.select('+memberPassword')
 		.exec();
 

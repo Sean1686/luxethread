@@ -27,7 +27,7 @@ export const MemberSchema = new Schema(
 			requried: true,
 		},
 
-		memberNickname: {
+		memberNick: {
 			type: String,
 			index: { unique: true, sparse: true },
 			required: true,
@@ -52,7 +52,7 @@ export const MemberSchema = new Schema(
 			type: String,
 		},
 
-		memberDescription: {
+		memberDesc: {
 			type: String,
 		},
 

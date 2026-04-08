@@ -7,7 +7,7 @@ export class MemberInput {
 	@IsNotEmpty()
 	@Length(3, 12)
 	@Field(() => String)
-	memberNickname!: string;
+	memberNick!: string;
 
 	@IsNotEmpty()
 	@Length(5, 12)
@@ -32,7 +32,7 @@ export class LoginInput {
 	@IsNotEmpty()
 	@Length(3, 12)
 	@Field(() => String)
-	memberNickname!: string;
+	memberNick!: string;
 
 	@IsNotEmpty()
 	@Length(5, 12)

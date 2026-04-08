@@ -20,7 +20,7 @@ export class Member {
 	memberPhone!: string;
 
 	@Field(() => String)
-	memberNickname!: string;
+	memberNick!: string;
 
 	memberPassword?: string;
 
@@ -34,7 +34,7 @@ export class Member {
 	memberAddress?: string;
 
 	@Field(() => String, { nullable: true })
-	memberDescription?: string;
+	memberDesc?: string;
 
 	@Field(() => Int)
 	memberProperties!: number;
