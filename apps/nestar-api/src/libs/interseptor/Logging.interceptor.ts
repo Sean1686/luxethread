@@ -12,21 +12,24 @@ export class LoggingInterceptor implements NestInterceptor {
 
 		if (requestTyep === 'http') {
 			// For HTTP requests, we can log the request details here if needed
+			return next.handle();
 		} else if (requestTyep === 'graphql') {
-            //** (1) Print request details */
+			//** (1) Print request details */
 			const gqlContext = GqlExecutionContext.create(context);
 			this.logger.log(` ${this.stringify(gqlContext.getContext().req.body)}`, 'REQUEST');
-        
-            // **(2) Errors handling via GraphQL */
+		
+			// **(2) Errors handling via GraphQL */
 
-            // **(3) No Errors giving Response below */
+			// **(3) No Errors giving Response below */
 			return next.handle().pipe(
 				tap((content) => {
 					const responseTime = Date.now() - recordTime;
 					this.logger.log(`${this.stringify(content)} - ${responseTime}ms\n\n`, 'RESPONSE');
 				}),
 			);
-        }
+		}
+
+		return next.handle();
 	}
 
 	private stringify(context: ExecutionContext): string {
