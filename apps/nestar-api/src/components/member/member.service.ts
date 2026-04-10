@@ -19,8 +19,7 @@ export class MemberService {
 		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
 		try {
 			const result = await this.memberModel.create(input);
-			// TODO: Authentication via Token
-			console.log('Member created successfully:', result);
+			result.accessToken = await this.authService.createToken(result)
 			return result;
 		} catch (err) {
 			console.log('Error occurred while creating member:', (err as Error).message);
@@ -46,6 +45,8 @@ export class MemberService {
 		// TODO: Implement password comparison logic here (e.g., using bcrypt)
 		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword)
 		if (!isMatch) throw new BadRequestException(Messages.WRONG_PASSWORD);
+
+		response.accessToken = await this.authService.createToken(response)
 
 		return response;
 	}
