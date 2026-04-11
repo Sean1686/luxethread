@@ -1,4 +1,4 @@
-export enum Messages{
+export enum Message{
     SOMETHING_WENT_WRONG = "Something went wrong",
     NO_DATA_FOUND = "No data found",
     CREATED_FAILED = "Creation failed",
@@ -19,5 +19,6 @@ export enum Messages{
     SEKF_SUBSCRIPTION_DENIED = "Self subscription is not allowed",
 	MEMBER_NOT_FOUND = "MEMBER_NOT_FOUND",
 	MEMBER_BLOCKED = "MEMBER_BLOCKED",
+	TOKEN_NOT_EXIST = "TOKEN_NOT_EXIST",
     
 }
