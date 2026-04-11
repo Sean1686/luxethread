@@ -19,7 +19,7 @@ export class MemberService {
 		input.memberPassword = await this.authService.hashPassword(input.memberPassword);
 		try {
 			const result = await this.memberModel.create(input);
-			result.accessToken = await this.authService.createToken(result)
+			result.accessToken = await this.authService.createToken(result);
 			return result;
 		} catch (err) {
 			console.log('Error occurred while creating member:', (err as Error).message);
@@ -29,10 +29,7 @@ export class MemberService {
 
 	public async login(input: LoginInput): Promise<Member> {
 		const { memberNick, memberPassword } = input;
-		const response = await this.memberModel
-		.findOne({ memberNick: memberNick })
-		.select('+memberPassword')
-		.exec();
+		const response = await this.memberModel.findOne({ memberNick: memberNick }).select('+memberPassword').exec();
 
 		if (!response || response.memberStatus === MemberStatus.DELETED) {
 			throw new BadRequestException(Messages.MEMBER_NOT_FOUND);
@@ -43,10 +40,10 @@ export class MemberService {
 		}
 
 		// TODO: Implement password comparison logic here (e.g., using bcrypt)
-		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword)
+		const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
 		if (!isMatch) throw new BadRequestException(Messages.WRONG_PASSWORD);
 
-		response.accessToken = await this.authService.createToken(response)
+		response.accessToken = await this.authService.createToken(response);
 
 		return response;
 	}
@@ -56,6 +53,14 @@ export class MemberService {
 	}
 
 	public async getmember(): Promise<string> {
+		return 'getmember executed';
+	}
+
+	public async getAllMembersByAdmin(): Promise<string> {
+		return 'updatemember executed';
+	}
+
+	public async updateMemberByAdmin(): Promise<string> {
 		return 'getmember executed';
 	}
 }
