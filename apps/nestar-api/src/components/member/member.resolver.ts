@@ -5,10 +5,11 @@ import { Member } from '../../libs/DTO/member/member';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
-import type { ObjectId } from 'mongoose'
+import type { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { MemberUpdate } from '../../libs/DTO/member/member.update';
 
 @Resolver()
 export class MemberResolver {
@@ -28,19 +29,11 @@ export class MemberResolver {
 	}
 
 	@UseGuards(AuthGuard)
-	@Mutation(() => String)
-	public async updateMember(@AuthMember('_id') memberId: ObjectId): Promise<string> {
-		console.log('Mutation updatemember called');
-		console.log(memberId);
-		return this.memberService.updateMember();
-	}
-
-	@UseGuards(AuthGuard)
 	@Query(() => String)
 	public async checkAuth(@AuthMember('memberNick') memberNick: ObjectId): Promise<string> {
 		console.log('Query: checkAuth');
-		console.log("memberNick:", memberNick);
-		return `Hi ${memberNick}`
+		console.log('memberNick:', memberNick);
+		return `Hi ${memberNick}`;
 	}
 
 	@Roles(MemberType.USER, MemberType.AGENT)
@@ -49,7 +42,18 @@ export class MemberResolver {
 	@Query(() => String)
 	public async checkAuthRoles(@AuthMember() authMember: Member): Promise<string> {
 		console.log('Query: checkAuthRoles');
-		return `Hi ${authMember.memberNick}, you are ${authMember.memberType} (memberId) ${authMember._id} `
+		return `Hi ${authMember.memberNick}, you are ${authMember.memberType} (memberId) ${authMember._id} `;
+	}
+
+	@UseGuards(AuthGuard)
+	@Mutation(() => Member)
+	public async updateMember(
+		@Args('input') input: MemberUpdate,
+		@AuthMember('_id') memberId: ObjectId,
+	): Promise<Member> {
+		console.log('Mutation updatemember called');
+		delete input._id;
+		return this.memberService.updateMember(memberId, input);
 	}
 
 	@Query(() => String)
@@ -67,7 +71,6 @@ export class MemberResolver {
 		return this.memberService.getAllMembersByAdmin();
 	}
 
-	// Authorization ADMIN
 	@Mutation(() => String)
 	public async updateMemberByAdmin(): Promise<string> {
 		console.log('Mutation: updateMemberByAdmin');

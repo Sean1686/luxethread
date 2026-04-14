@@ -1,12 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { LoginInput, MemberInput } from '../../libs/DTO/member/member.input';
 import { Member } from '../../libs/DTO/member/member';
 import { MemberStatus } from '../../libs/enums/member.enum';
 import { Message } from '../../libs/enums/common.enum';
 import { error } from 'console';
 import { AuthService } from '../auth/auth.service';
+import { MemberUpdate } from '../../libs/DTO/member/member.update';
 
 @Injectable()
 export class MemberService {
@@ -48,8 +49,16 @@ export class MemberService {
 		return response;
 	}
 
-	public async updateMember(): Promise<string> {
-		return 'updatemember executed';
+	public async updateMember(memberId: ObjectId, input: MemberUpdate): Promise<Member> {
+		const result: Member | null = await this.memberModel.findOneAndUpdate(
+			{ _id: memberId, memberStatus: MemberStatus.ACTIVE },
+			input,
+			{ new: true },
+		).exec();
+		if(!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+
+		result.accessToken = await this.authService.createToken(result)
+		return result;
 	}
 
 	public async getmember(): Promise<string> {
