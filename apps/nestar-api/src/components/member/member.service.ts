@@ -100,6 +100,15 @@ export class MemberService {
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },
+
+				{
+					$addFields: {
+						memberAuthType: {
+							$ifNull: ['$memberAuthType', 'phone'],
+						},
+					},
+				},
+
 				{
 					$facet: {
 						list: [{ $skip: (page - 1) * limit }, { $limit: limit }],
@@ -108,8 +117,7 @@ export class MemberService {
 				},
 			])
 			.exec();
-		console.log('result:', result);
-		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
 		return result[0];
 	}
 
