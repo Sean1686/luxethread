@@ -8,6 +8,7 @@ import { Message } from '../../libs/enums/common.enum';
 import { error } from 'console';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/DTO/member/member.update';
+import { T } from '../../libs/types/common';
 
 @Injectable()
 export class MemberService {
@@ -32,9 +33,9 @@ export class MemberService {
 		const { memberNick, memberPassword } = input;
 		const response = await this.memberModel.findOne({ memberNick: memberNick }).select('+memberPassword').exec();
 
-		if (!response || response.memberStatus === MemberStatus.DELETED) {
+		if (!response || response.memberStatus === MemberStatus.DELET) {
 			throw new BadRequestException(Message.MEMBER_NOT_FOUND);
-		} else if (response.memberStatus === MemberStatus.BLOCKED) {
+		} else if (response.memberStatus === MemberStatus.BLOCK) {
 			throw new BadRequestException(Message.MEMBER_BLOCKED);
 		} else if (!response.memberPassword) {
 			throw new BadRequestException(Message.MEMBER_NOT_FOUND);
@@ -61,8 +62,16 @@ export class MemberService {
 		return result;
 	}
 
-	public async getmember(): Promise<string> {
-		return 'getmember executed';
+	public async getmember(targetId: ObjectId): Promise<Member> {
+		const search: T = {
+			_id: targetId,
+			memberStatus: {
+				$in: [MemberStatus.ACTIVE, MemberStatus.BLOCK]
+			}, 
+		};
+		const targetMember = await this.memberModel.findOne(search).exec();
+		if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND)
+		return targetMember;
 	}
 
 	public async getAllMembersByAdmin(): Promise<string> {

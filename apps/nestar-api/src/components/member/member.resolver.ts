@@ -10,6 +10,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MemberUpdate } from '../../libs/DTO/member/member.update';
+import { shapeIntoMongoObjectId } from '../../libs/config';
 
 @Resolver()
 export class MemberResolver {
@@ -56,10 +57,11 @@ export class MemberResolver {
 		return this.memberService.updateMember(memberId, input);
 	}
 
-	@Query(() => String)
-	public async getmember(): Promise<string> {
+	@Query(() => Member)
+	public async getmember(@Args("memberId") input: string): Promise<Member> {
 		console.log('Query getmember called');
-		return this.memberService.getmember();
+		const targetId = shapeIntoMongoObjectId(input);
+		return this.memberService.getmember(targetId);
 	}
 
 	//** ADMIN */
