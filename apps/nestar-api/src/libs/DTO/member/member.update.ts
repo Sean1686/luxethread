@@ -14,6 +14,10 @@ export class MemberUpdate {
 	memberType?: MemberType;
 
 	@IsOptional()
+	@Field(() => MemberAuthType, { nullable: true })
+	memberAuthType?: MemberAuthType;
+
+	@IsOptional()
 	@Field(() => MemberStatus, { nullable: true })
 	memberStatus?: MemberStatus;
 
@@ -40,13 +44,15 @@ export class MemberUpdate {
 	@Field(() => String, { nullable: true })
 	memberImage?: string;
 
-    @IsOptional()
+	@IsOptional()
 	@Field(() => String, { nullable: true })
 	memberAddress?: string;
 
-    @IsOptional()
+	@IsOptional()
 	@Field(() => String, { nullable: true })
 	memberDesc?: string;
 
-    deletedAt: Date | undefined
+	@IsOptional()
+	@Field(() => Date, { nullable: true })
+	deletedAt?: Date;
 }

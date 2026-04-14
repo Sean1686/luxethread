@@ -23,7 +23,7 @@ export const MemberSchema = new Schema(
 		memberPhone: {
 			type: String,
 			index: { unique: true, sparse: true },
-			requried: true,
+			required: true,
 		},
 
 		memberNick: {
