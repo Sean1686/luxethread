@@ -132,7 +132,7 @@ export class MemberService {
 				{
 					$addFields: {
 						memberAuthType: {
-							$ifNull: ['$memberAuthType', 'PHONE'],
+							$ifNull: ['$memberAuthType', 'phone'],
 						},
 					},
 				},
