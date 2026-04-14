@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { LoginInput, MemberInput } from '../../libs/DTO/member/member.input';
-import { Member } from '../../libs/DTO/member/member';
-import { MemberStatus } from '../../libs/enums/member.enum';
-import { Message } from '../../libs/enums/common.enum';
+import { AgentsInquiry, LoginInput, MemberInput } from '../../libs/DTO/member/member.input';
+import { Member, Members } from '../../libs/DTO/member/member';
+import { MemberStatus, MemberType } from '../../libs/enums/member.enum';
+import { Direction, Message } from '../../libs/enums/common.enum';
 import { error } from 'console';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/DTO/member/member.update';
@@ -12,6 +12,7 @@ import { T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import { ViewInput } from '../../libs/DTO/view/view.input';
 import { ViewGroup } from '../../libs/enums/view.enum';
+import { Dir } from 'fs';
 
 @Injectable()
 export class MemberService {
@@ -81,9 +82,38 @@ export class MemberService {
 				await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 } }, { new: true }).exec();
 				targetMember.memberViews++;
 			}
+			// meLike
+			// meFollowed
 		}
 
 		return targetMember;
+	}
+
+	public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
+		const { text } = input.search ?? {};
+		const page = input.page ?? 1;
+		const limit = input.limit ?? 10;
+		const match: T = { MemberType: MemberType.AGENT, MemberStatus: MemberStatus.ACTIVE };
+		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+		if (text) match.memberNick = { $regex: new RegExp(text, 'i') };
+		console.log('match:', match);
+
+		const result = await this.memberModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: sort },
+				{
+					$facet: {
+						list: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+						metaCounter: [{$count: 'total'}],
+					},
+				},
+			])
+			.exec();
+		console.log('result:', result);
+		if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND)
+		return result[0];
 	}
 
 	public async getAllMembersByAdmin(): Promise<string> {
