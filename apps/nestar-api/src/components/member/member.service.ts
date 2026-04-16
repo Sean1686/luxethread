@@ -7,7 +7,7 @@ import { MemberAuthType, MemberStatus, MemberType } from '../../libs/enums/membe
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/DTO/member/member.update';
-import { T } from '../../libs/types/common';
+import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import { ViewGroup } from '../../libs/enums/view.enum';
 
@@ -167,4 +167,23 @@ export class MemberService {
 
 		return result;
 	}
+
+public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
+	console.log('executed')
+	const { _id, targetKey, modifier } = input;
+	const result = await this.memberModel
+		.findOneAndUpdate(
+			{ _id },
+			{ $inc: { [targetKey]: modifier } },
+			{ new: true },
+		)
+		.exec();
+
+	if (!result) {
+		throw new BadRequestException(Message.MEMBER_NOT_FOUND);
+	}
+
+	return result;
+}
+
 }
