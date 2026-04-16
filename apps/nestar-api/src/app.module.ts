@@ -8,14 +8,17 @@ import { ComponentsModule } from './components/components.module';
 import { DatabaseModule } from './database/database.module';
 import { AppResolver } from './app.resolver';
 import { T } from './libs/types/common';
+import { GraphQLUpload } from 'graphql-upload';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot(),
 		GraphQLModule.forRoot({
 			driver: ApolloDriver,
+			path: '/graphql',
 			playground: true,
 			uploads: false,
+			resolvers: { Upload: GraphQLUpload },
 			autoSchemaFile: true,
 			formatError: (error: T) => {
 				console.error('GraphQL Error:', error);
