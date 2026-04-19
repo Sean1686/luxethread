@@ -3,7 +3,7 @@ import { IsIn, IsInt, IsNotEmpty, IsOptional, Length, Min } from 'class-validato
 import { MemberAuthType, MemberStatus, MemberType } from '../../enums/member.enum';
 import { availableAgentSorts, availableMemberSorts, availableOptions, availablePropertySorts } from '../../config';
 import { Direction } from '../../enums/common.enum';
-import { PropertyLocation, PropertyType } from '../../enums/property.enum';
+import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
 import type { ObjectId } from 'mongoose';
 
 @InputType()
@@ -160,3 +160,39 @@ export class PropertiesInquiry {
 	@Field(() => PISearch)
 	search!: PISearch;
 }
+
+@InputType()
+class APISearch{
+	@IsOptional()
+	@Field(() => PropertyStatus, {nullable: true})
+	propertyStatus?: PropertyStatus
+}
+
+@InputType()
+export class AgentPropertiesInquiry{
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	page!: number
+
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Int)
+	limit!: number
+
+	@IsNotEmpty()
+	@IsIn(availablePropertySorts)
+	@Field(() => String, {nullable: true})
+	sort!: string
+
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => Direction, {nullable: true})
+	direction?: Direction
+
+	@IsNotEmpty()
+	@Min(1)
+	@Field(() => APISearch)
+	search!: APISearch
+}
+
