@@ -8,6 +8,7 @@ export enum Message{
     DELETION_FAILED = "Deletion failed",
     UPLOAD_FAILED = "Upload failed",
     BAD_REQUEST = "Bad request",
+    REMOVE_FAILED = "Removing the object is failed",
 
     USED_MEMBER_NICK_OR_PHONE = "Member nickname or phone number already in use",
     NO_MEMBER_NICKN = "No member nickname provided",
