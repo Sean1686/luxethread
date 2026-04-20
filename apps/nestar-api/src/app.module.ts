@@ -16,7 +16,7 @@ import { GraphQLUpload } from 'graphql-upload';
 		GraphQLModule.forRoot({
 			driver: ApolloDriver,
 			path: '/graphql',
-			playground: true,
+			playground: true, 
 			uploads: false,
 			resolvers: { Upload: GraphQLUpload },
 			autoSchemaFile: true,
