@@ -10,6 +10,7 @@ export enum Message{
     BAD_REQUEST = "Bad request",
     REMOVE_FAILED = "Removing the object is failed",
 
+    DATA_ALREADY_EXISTS = "Property already exists with same parameters",
     USED_MEMBER_NICK_OR_PHONE = "Member nickname or phone number already in use",
     NO_MEMBER_NICKN = "No member nickname provided",
     BLOCKED_USER = "Blocked user",
@@ -24,6 +25,7 @@ export enum Message{
 	MEMBER_BLOCKED = "MEMBER_BLOCKED",
 	TOKEN_NOT_EXIST = "TOKEN_NOT_EXIST",
 	PROVIDE_ALLOWED_FORMAT = "PROVIDE_ALLOWED_FORMAT",
+    CREATE_COMMENT_FAILED = "CREATE_COMMENT_FAILED",
 }
 
 export enum Direction {

@@ -64,12 +64,12 @@ export class Property {
     propertyDesc!: string[]
 
     @Field(() => Boolean)
-    propepropertyBarter!: boolean;
+    propertyBarter!: boolean;
 
     @Field(() => Boolean)
     propertyRent!: boolean;
 
-    @Field(() => Int)
+    @Field(() => String)
     memberId!: ObjectId
 
     @Field(() => Date, {nullable: true})
@@ -90,7 +90,7 @@ export class Property {
     /** from aggregation */
 
     @Field(() => Member, { nullable: true})
-    memberDate?: Member
+    memberData?: Member
 }
 
 @ObjectType()

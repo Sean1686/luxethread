@@ -1,7 +1,12 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PropertyService } from './property.service';
 import { Properties, Property } from '../../libs/DTO/property/property';
-import { AgentPropertiesInquiry, AllPropetiesInquiry, PropertiesInquiry, PropertyInput } from '../../libs/DTO/property/property.input';
+import {
+	AgentPropertiesInquiry,
+	AllPropetiesInquiry,
+	PropertiesInquiry,
+	PropertyInput,
+} from '../../libs/DTO/property/property.input';
 import { AuthMember } from '../auth/decorators/authMember.decorator';
 import type { ObjectId } from 'mongoose';
 import { UseGuards } from '@nestjs/common';
@@ -16,6 +21,8 @@ import { PropertyUpdate } from '../../libs/DTO/property/property.update';
 export class PropertyResolver {
 	constructor(private readonly propertyService: PropertyService) {}
 
+	@Roles(MemberType.AGENT)
+	@UseGuards(RolesGuard)
 	@Mutation(() => Property)
 	public async createProperty(
 		@Args('input') input: PropertyInput,
@@ -23,7 +30,6 @@ export class PropertyResolver {
 	): Promise<Property> {
 		console.log('Mutation createProperty called');
 		input.memberId = memberId;
-
 		return await this.propertyService.createProperty(input);
 	}
 
@@ -47,7 +53,7 @@ export class PropertyResolver {
 		return await this.propertyService.updateProperty(memberId, input);
 	}
 
-	@UseGuards(RolesGuard)
+	@UseGuards(WithoutGuard)
 	@Query(() => Properties)
 	public async getProperties(
 		@Args('input') input: PropertiesInquiry,
@@ -84,22 +90,18 @@ export class PropertyResolver {
 	@Roles(MemberType.ADMIN)
 	@UseGuards(RolesGuard)
 	@Mutation((returns) => Property)
-	public async updatePropertyByAdmin(
-		@Args('input') input: PropertyUpdate,
-	): Promise<Property> {
+	public async updatePropertyByAdmin(@Args('input') input: PropertyUpdate): Promise<Property> {
 		console.log('Mutation: updatePropertyByAdmin');
-		input._id = shapeIntoMongoObjectId(input._id)
+		input._id = shapeIntoMongoObjectId(input._id);
 		return await this.propertyService.updatePropertyByAdmin(input);
 	}
 
 	@Roles(MemberType.ADMIN)
 	@UseGuards(RolesGuard)
 	@Mutation((returns) => Property)
-	public async removePropertyByAdmin(
-		@Args('propertyId') input: string,
-	): Promise<Property> {
+	public async removePropertyByAdmin(@Args('propertyId') input: string): Promise<Property> {
 		console.log('Mutation: removePropertyByAdmin');
-		const propertyId = shapeIntoMongoObjectId(input)
+		const propertyId = shapeIntoMongoObjectId(input);
 		return await this.propertyService.removePropertyByAdmin(propertyId);
 	}
 }
