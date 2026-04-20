@@ -7,7 +7,7 @@ import type { ObjectId } from 'mongoose';
 export class BoardArticleUpdate {
 	@IsNotEmpty()
 	@Field(() => String)
-	_id: ObjectId;
+	_id!: ObjectId;
 
 	@IsOptional()
 	@Field(() => BoardArticleStatus, { nullable: true })
