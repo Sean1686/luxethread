@@ -71,6 +71,7 @@ export class MemberService {
 		};
 		const targetMember = await this.memberModel.findOne(search).exec();
 		if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		targetMember.memberAuthType ??= MemberAuthType.PHONE;
 
 		if (memberId) {
 			const viewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };

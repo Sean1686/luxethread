@@ -33,8 +33,23 @@ export const shapeIntoMongoObjectId = (target: any) => {
 export const lookupMember = {
 	$lookup: {
 		from: 'members',
-		localField: 'memberId',
-		foreignField: '_id',
+		let: { memberId: '$memberId' },
+		pipeline: [
+			{
+				$match: {
+					$expr: {
+						$eq: ['$_id', '$$memberId'],
+					},
+				},
+			},
+			{
+				$addFields: {
+					memberAuthType: {
+						$ifNull: ['$memberAuthType', 'phone'],
+					},
+				},
+			},
+		],
 		as: 'memberData'
 	}
 }
