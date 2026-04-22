@@ -16,6 +16,5 @@ async function bootstrap() {
 	app.use('/uploads', express.static('./uploads'));
 
 	await app.listen(port);
-	console.log(`GraphQL endpoint: http://localhost:${port}/graphql`);
 }
 bootstrap();
