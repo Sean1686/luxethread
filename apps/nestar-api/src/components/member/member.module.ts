@@ -11,7 +11,7 @@ import FollewSchema from '../../schemas/Follow.model';
 @Module({
 	imports: [
 		MongooseModule.forFeature([{name: 'Member', schema: MemberSchema}]),
-		MongooseModule.forFeature([{ name: 'Follow',schema: FollewSchema},]), 
+		MongooseModule.forFeature([{ name: 'Follow',schema: FollewSchema}]), 
 		AuthModule,
 		ViewModule,
 		LikeModule,

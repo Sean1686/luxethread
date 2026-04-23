@@ -89,10 +89,18 @@ export class MemberService {
 			// meLike
 			const likeInput: LikeInput = { memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };
 			targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+
 			// meFollowed
+			targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
+
 		}
 
 		return targetMember;
+	}
+
+	private async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
+		const result = await this.followModel.findOne({ followerId: followerId, followingId: followingId }).exec();
+		return result ? [{  followerId: followerId, followingId: followingId, myFollowing: true }] : [];
 	}
 
 	public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
@@ -196,9 +204,6 @@ export class MemberService {
 
 		return result;
 	}
-
-	// public async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
-
 
 public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
 	const { _id, targetKey, modifier } = input;
