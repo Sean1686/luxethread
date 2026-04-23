@@ -3,6 +3,13 @@ import { IsNotEmpty, IsOptional, Min } from 'class-validator';
 import type { ObjectId } from 'mongoose';
 
 @InputType()
+export class FollowInput {
+	@IsNotEmpty()
+	@Field(() => String)
+	followingId!: string;
+}
+
+@InputType()
 class FollowSearch {
 	@IsOptional()
 	@Field(() => String, { nullable: true })

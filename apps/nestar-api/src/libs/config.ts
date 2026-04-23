@@ -53,3 +53,51 @@ export const lookupMember = {
 		as: 'memberData'
 	}
 }
+
+export const lookupFollowingData = {
+	$lookup: {
+		from: 'members',
+		let: { followingId: '$followingId' },
+		pipeline: [
+			{
+				$match: {
+					$expr: {
+						$eq: ['$_id', '$$followingId'],
+					},
+				},
+			},
+			{
+				$addFields: {
+					memberAuthType: {
+						$ifNull: ['$memberAuthType', 'phone'],
+					},
+				},
+			},
+		],
+		as: 'followingData'
+	}
+};
+
+export const lookupFollowerData = {
+	$lookup: {
+		from: 'members',
+		let: { followerId: '$followerId' },
+		pipeline: [
+			{
+				$match: {
+					$expr: {
+						$eq: ['$_id', '$$followerId'],
+					},
+				},
+			},
+			{
+				$addFields: {
+					memberAuthType: {
+						$ifNull: ['$memberAuthType', 'phone'],
+					},
+				},
+			},
+		],
+		as: 'followerData'
+	}
+};

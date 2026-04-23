@@ -11,14 +11,15 @@ import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeInput } from '../../libs/DTO/like/like.input';
-import { Like } from '../../libs/DTO/like/like';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
+import { Follower, Following, MeFollowed } from '../../libs/DTO/follow/follow';
 
 @Injectable()
 export class MemberService {
 	constructor(
 		@InjectModel('Member') private readonly memberModel: Model<Member>,
+		@InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
 		private authService: AuthService,
 		private viewService: ViewService,
 		private likeService: LikeService,
@@ -195,6 +196,9 @@ export class MemberService {
 
 		return result;
 	}
+
+	// public async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
+
 
 public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
 	const { _id, targetKey, modifier } = input;

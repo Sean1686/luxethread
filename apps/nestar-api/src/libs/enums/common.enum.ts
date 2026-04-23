@@ -9,6 +9,7 @@ export enum Message{
     UPLOAD_FAILED = "Upload failed",
     BAD_REQUEST = "Bad request",
     REMOVE_FAILED = "Removing the object is failed",
+    CAN_NOT_FOLLOW_MYSELF = "You cannot follow yourself",
 
     DATA_ALREADY_EXISTS = "Property already exists with same parameters",
     USED_MEMBER_NICK_OR_PHONE = "Member nickname or phone number already in use",
