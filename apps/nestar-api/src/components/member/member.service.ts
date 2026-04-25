@@ -14,6 +14,8 @@ import { LikeInput } from '../../libs/DTO/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
 import { Follower, Following, MeFollowed } from '../../libs/DTO/follow/follow';
+import { lookup } from 'dns';
+import { lookupMemberLiked } from '../../libs/config';
 
 @Injectable()
 export class MemberService {
@@ -92,7 +94,6 @@ export class MemberService {
 
 			// meFollowed
 			targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
-
 		}
 
 		return targetMember;
@@ -100,7 +101,7 @@ export class MemberService {
 
 	private async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
 		const result = await this.followModel.findOne({ followerId: followerId, followingId: followingId }).exec();
-		return result ? [{  followerId: followerId, followingId: followingId, myFollowing: true }] : [];
+		return result ? [{ followerId: followerId, followingId: followingId, myFollowing: true }] : [];
 	}
 
 	public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
@@ -117,7 +118,6 @@ export class MemberService {
 			.aggregate([
 				{ $match: match },
 				{ $sort: sort },
-
 				{
 					$addFields: {
 						memberAuthType: {
@@ -128,7 +128,7 @@ export class MemberService {
 
 				{
 					$facet: {
-						list: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+						list: [{ $skip: (page - 1) * limit }, { $limit: limit }, lookupMemberLiked(memberId)],
 						metaCounter: [{ $count: 'total' }],
 					},
 				},
@@ -139,20 +139,22 @@ export class MemberService {
 	}
 
 	public async likeTargetMember(memberId: ObjectId, likeRefId: ObjectId): Promise<Member> {
-		const target: Member | null = await this.memberModel.findOne({ _id: likeRefId, memberStatus: MemberStatus.ACTIVE }).exec();
+		const target: Member | null = await this.memberModel
+			.findOne({ _id: likeRefId, memberStatus: MemberStatus.ACTIVE })
+			.exec();
 		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		const input: LikeInput = {
 			memberId,
 			likeRefId,
 			likeGroup: LikeGroup.MEMBER,
-		}
-		
+		};
+
 		// TOGGLE LOGIC
 		const modifier: number = await this.likeService.toggleLike(input);
 		const result = await this.memberStatsEditor({ _id: likeRefId, targetKey: 'memberLikes', modifier });
 
-		if(!result) {
+		if (!result) {
 			throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
 		}
 		return result;
@@ -205,21 +207,16 @@ export class MemberService {
 		return result;
 	}
 
-public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
-	const { _id, targetKey, modifier } = input;
-	const result = await this.memberModel
-		.findByIdAndUpdate(
-			{ _id },
-			{ $inc: { [targetKey]: modifier } },
-			{ new: true },
-		)
-		.exec();
+	public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
+		const { _id, targetKey, modifier } = input;
+		const result = await this.memberModel
+			.findByIdAndUpdate({ _id }, { $inc: { [targetKey]: modifier } }, { new: true })
+			.exec();
 
-	if (!result) {
-		throw new BadRequestException(Message.MEMBER_NOT_FOUND);
+		if (!result) {
+			throw new BadRequestException(Message.MEMBER_NOT_FOUND);
+		}
+
+		return result;
 	}
-
-	return result;
-}
-
 }
