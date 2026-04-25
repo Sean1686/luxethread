@@ -30,7 +30,8 @@ export const getSerialForImage = (filename: string) => {
 export const shapeIntoMongoObjectId = (target: any) => {
 	return typeof target === 'string' ? new ObjectId(target) : target;
 };
-export const lookupMemberLiked = (memberId: T, targetRefId: string = '$_id') => ({
+export const lookupMemberLiked = (memberId: T, targetRefId: string = '$_id') => {
+	return{
 	$lookup: {
 		from: 'likes',
 		let: {
@@ -57,7 +58,42 @@ export const lookupMemberLiked = (memberId: T, targetRefId: string = '$_id') => 
 		],
 		as: 'meLiked',
 	},
-});
+}}
+
+interface LookupMemberFollowed {
+	followerId: T;
+	followingId: string;
+}
+export const lookupMemberFollowed = (input: LookupMemberFollowed) => {
+	const { followerId, followingId } = input;
+	return {
+		$lookup: {
+			from: 'follows',
+			let: {
+				localFollowerId: followerId,
+				localFollowingId: followingId,
+				localMyFavorite: true,
+			},
+		pipeline: [
+			{
+				$match: {
+					$expr: {
+						$and: [{ $eq: ['$followerId', '$$localFollowerId'] }, { $eq: ['$followingId', '$$localFollowingId'] }],
+					},
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					followerId: 1,
+					followingId: 1,
+					myFollowing: '$$localMyFavorite',
+				},
+			},
+		],
+		as: 'meFollowed',
+	},
+}};
 
 export const lookupMember = {
 	$lookup: {
