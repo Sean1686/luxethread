@@ -16,7 +16,7 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import moment from 'moment';
 import { PropertyUpdate } from '../../libs/DTO/property/property.update';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupMember, lookupMemberLiked, shapeIntoMongoObjectId } from '../../libs/config';
 import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/DTO/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
@@ -40,7 +40,7 @@ export class PropertyService {
 			});
 			return result;
 		} catch (err) {
-			console.log('Error occurred while creating member:',(err as Error).message);
+			console.log('Error occurred while creating member:', (err as Error).message);
 			throw new BadRequestException(Message.DATA_ALREADY_EXISTS);
 		}
 	}
@@ -116,7 +116,7 @@ export class PropertyService {
 						list: [
 							{ $skip: (input.page - 1) * input.limit },
 							{ $limit: input.limit },
-							// meLiked
+							lookupMemberLiked(memberId),
 							lookupMember,
 							{ $unwind: '$memberData' },
 						],
@@ -125,7 +125,7 @@ export class PropertyService {
 				},
 			])
 			.exec();
-		if (!result[0]?.list.length)  throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+		if (!result[0]?.list.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		return result[0];
 	}
@@ -194,24 +194,26 @@ export class PropertyService {
 	}
 
 	public async likeTargetProperty(memberId: ObjectId, likeRefId: ObjectId): Promise<Property> {
-			const target: Property | null = await this.propertyModel.findOne({ _id: likeRefId, propertyStatus: PropertyStatus.ACTIVE }).exec();
-			if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-	
-			const input: LikeInput = {
-				memberId,
-				likeRefId,
-				likeGroup: LikeGroup.PROPERTY,
-			}
-			
-			// TOGGLE LOGIC
-			const modifier: number = await this.likeService.toggleLike(input);
-			const result = await this.propertyStatsEditor({ _id: likeRefId, targetKey: 'propertyLikes', modifier });
-	
-			if(!result) {
-				throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
-			}
-			return result;
+		const target: Property | null = await this.propertyModel
+			.findOne({ _id: likeRefId, propertyStatus: PropertyStatus.ACTIVE })
+			.exec();
+		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		const input: LikeInput = {
+			memberId,
+			likeRefId,
+			likeGroup: LikeGroup.PROPERTY,
+		};
+
+		// TOGGLE LOGIC
+		const modifier: number = await this.likeService.toggleLike(input);
+		const result = await this.propertyStatsEditor({ _id: likeRefId, targetKey: 'propertyLikes', modifier });
+
+		if (!result) {
+			throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
 		}
+		return result;
+	}
 
 	public async getAllPropertiesByAdmin(input: AllPropetiesInquiry): Promise<Properties> {
 		const { propertyStatus, propertyLocationList } = input.search;
