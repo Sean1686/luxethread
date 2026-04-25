@@ -5,6 +5,7 @@ import { Properties, Property } from '../../libs/DTO/property/property';
 import {
 	AgentPropertiesInquiry,
 	AllPropetiesInquiry,
+	OrdinaryInquiry,
 	PropertiesInquiry,
 	PropertyInput,
 } from '../../libs/DTO/property/property.input';
@@ -128,6 +129,10 @@ export class PropertyService {
 		if (!result[0]?.list.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
 		return result[0];
+	}
+
+	public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
+		return await this.likeService.getFavoriteProperties(memberId, input);
 	}
 
 	private shapeMatchQuery(match: T, input: PropertiesInquiry): void {
