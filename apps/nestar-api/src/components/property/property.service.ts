@@ -135,6 +135,10 @@ export class PropertyService {
 		return await this.likeService.getFavoriteProperties(memberId, input);
 	}
 
+	public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
+		return await this.likeService.getFavoriteProperties(memberId, input);
+	}
+
 	private shapeMatchQuery(match: T, input: PropertiesInquiry): void {
 		const {
 			memberId,
