@@ -9,6 +9,7 @@ import { DatabaseModule } from './database/database.module';
 import { AppResolver } from './app.resolver';
 import { T } from './libs/types/common';
 import { GraphQLUpload } from 'graphql-upload';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { GraphQLUpload } from 'graphql-upload';
 		}),
 		ComponentsModule,
 		DatabaseModule,
+		SocketModule,
 	],
 	controllers: [AppController],
 	providers: [AppService, AppResolver],
