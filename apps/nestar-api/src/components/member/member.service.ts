@@ -43,7 +43,7 @@ export class MemberService {
 		const { memberNick, memberPassword } = input;
 		const response = await this.memberModel.findOne({ memberNick: memberNick }).select('+memberPassword').exec();
 
-		if (!response || response.memberStatus === MemberStatus.DELET) {
+		if (!response || response.memberStatus === MemberStatus.DELETE) {
 			throw new BadRequestException(Message.MEMBER_NOT_FOUND);
 		} else if (response.memberStatus === MemberStatus.BLOCK) {
 			throw new BadRequestException(Message.MEMBER_BLOCKED);

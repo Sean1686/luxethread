@@ -6,10 +6,10 @@ export const availableMemberSorts = ['createdAt', 'updateAt', 'memberLikes', 'me
 export const availableOptions = ['propertyBarter', 'propertyRent'];
 export const availablePropertySorts = [
 	'createdAt',
-	'updateAt',
+	'updatedAt',
 	'propertyLikes',
 	'propertyViews',
-	'propertyRanks',
+	'propertyRank',
 	'propertyPrice',
 ];
 
@@ -111,7 +111,7 @@ export const lookupMember = {
 			{
 				$addFields: {
 					memberAuthType: {
-						$ifNull: ['$memberAuthType', 'phone'],
+						$ifNull: ['$memberAuthType', 'PHONE'],
 					},
 				},
 			},
@@ -135,7 +135,7 @@ export const lookupFollowingData = {
 			{
 				$addFields: {
 					memberAuthType: {
-						$ifNull: ['$memberAuthType', 'phone'],
+						$ifNull: ['$memberAuthType', 'PHONE'],
 					},
 				},
 			},
@@ -159,7 +159,7 @@ export const lookupFollowerData = {
 			{
 				$addFields: {
 					memberAuthType: {
-						$ifNull: ['$memberAuthType', 'phone'],
+						$ifNull: ['$memberAuthType', 'PHONE'],
 					},
 				},
 			},

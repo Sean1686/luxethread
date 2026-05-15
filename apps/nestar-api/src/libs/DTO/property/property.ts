@@ -8,100 +8,92 @@ import { MeLiked } from '../like/like';
 
 @ObjectType()
 export class Property {
-    @Field(() => String)
-    _id!: mongoose.ObjectId;
+	@Field(() => String)
+	_id!: mongoose.ObjectId;
 
-    @Field(() => PropertyType)
-    propertyType!: PropertyType
+	@Field(() => PropertyType)
+	propertyType!: PropertyType;
 
-      
-    @Field(() => PropertyStatus)
-    propertyStatus!: PropertyStatus
+	@Field(() => PropertyStatus)
+	propertyStatus!: PropertyStatus;
 
-      
-    @Field(() => PropertyLocation)
-    propertyLocation!: PropertyLocation
+	@Field(() => PropertyLocation)
+	propertyLocation!: PropertyLocation;
 
-      
-    @Field(() => String)
-    propertyAddress!: string
+	@Field(() => String)
+	propertyAddress!: string;
 
-      
-    @Field(() => String)
-    propertyTitle!: string
+	@Field(() => String)
+	propertyTitle!: string;
 
-      
-    @Field(() => Number)
-    propertyPrice!: number;
-    
-      
-    @Field(() => Number)
-    propertySquare!: number
+	@Field(() => Number)
+	propertyPrice!: number;
 
-      
-    @Field(() => Int)
-    propertyBeds!: number
+	@Field(() => Number)
+	propertySquare!: number;
 
-      
-    @Field(() => Int)
-    propertyRooms!: number
-    
-    @Field(() => Int)
-    propertyViews!: number
+	@Field(() => Int)
+	propertyBeds!: number;
 
-    @Field(() => Int)
-    propertyLikes!: number
+	@Field(() => Int)
+	propertyRooms!: number;
 
-    @Field(() => Int)
-    propertyComments!: number
+	@Field(() => Int)
+	propertyViews!: number;
 
-    @Field(() => Int)
-    propertyRank!: number
+	@Field(() => Int)
+	propertyLikes!: number;
 
-    @Field(() => [String])
-    propertyImages!: string[]
+	@Field(() => Int)
+	propertyComments!: number;
 
-    @Field(() => [String], { nullable: true})
-    propertyDesc!: string[]
+	@Field(() => Int)
+	propertyRank!: number;
 
-    @Field(() => Boolean)
-    propertyBarter!: boolean;
+	@Field(() => [String])
+	propertyImages!: string[];
 
-    @Field(() => Boolean)
-    propertyRent!: boolean;
+	@Field(() => String, { nullable: true })
+	propertyDesc!: string;
 
-    @Field(() => String)
-    memberId!: ObjectId
+	@Field(() => Boolean)
+	propertyBarter!: boolean;
 
-    @Field(() => Date, {nullable: true})
-    soldAt!: Date;
+	@Field(() => Boolean)
+	propertyRent!: boolean;
 
-     @Field(() => Date, {nullable: true})
-    deletedAt!: Date;
+	@Field(() => String)
+	memberId!: ObjectId;
 
-    @Field(() => Date, {nullable: true})
-    constructedAt!: Date;
+	@Field(() => Date, { nullable: true })
+	soldAt!: Date;
 
-    @Field(() => Date)
-    createdAt!: Date;
+	@Field(() => Date, { nullable: true })
+	deletedAt!: Date;
 
-    @Field(() => Date)
-    updatedAt!: Date;
+	@Field(() => Date, { nullable: true })
+	constructedAt!: Date;
 
-    /** from aggregation */
+	@Field(() => Date)
+	createdAt!: Date;
 
-    @Field(() => Member, { nullable: true})
-    memberData?: Member
+	@Field(() => Date)
+	updatedAt!: Date;
 
-    @Field(() => [MeLiked], { nullable: true })
-    meLiked?: MeLiked[]
+	/** from aggregation */
+
+	@Field(() => Member, { nullable: true })
+	memberData?: Member;
+
+	@Field(() => [MeLiked], { nullable: true })
+	meLiked?: MeLiked[];
 }
 
 @ObjectType()
 export class Properties {
-    @Field(() => [Property])
-    list!: Property[]
+	@Field(() => [Property])
+	list!: Property[];
 
-    @Field(() => [TotalCounter], {nullable: true})
-    metaCounter!: TotalCounter[]
+	@Field(() => [TotalCounter], { nullable: true })
+	metaCounter!: TotalCounter[];
 }

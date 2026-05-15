@@ -79,7 +79,7 @@ export class PriceRange {
 }
 
 @InputType()
-export class SquareRange {
+export class SquaresRange {
 	@Field(() => Int)
 	start!: number;
 
@@ -132,8 +132,8 @@ class PISearch {
 	periodsRange?: PeriodsRange;
 
 	@IsOptional()
-	@Field(() => SquareRange, { nullable: true })
-	squareRange?: SquareRange;
+	@Field(() => SquaresRange, { nullable: true })
+	squaresRange?: SquaresRange;
 
 	@IsOptional()
 	@Field(() => String, { nullable: true })
@@ -231,7 +231,7 @@ export class AllPropetiesInquiry {
 	direction?: Direction;
 
 	@IsNotEmpty()
-	@Field(() => ALPISearch)
+	@Field(() => ALPISearch, { nullable: true })
 	search!: ALPISearch;
 }
 

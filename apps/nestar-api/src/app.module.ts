@@ -26,6 +26,7 @@ import { SocketModule } from './socket/socket.module';
 				const graphQLFormattedError = {
 					code: error?.extensions.code,
 					message: error?.extensions?.exception?.response?.message || error?.extensions?.message || error?.message,
+					originalError: error?.extensions?.originalError,
 				};
 				console.log('GRAPHQL GLOBAL ERROR:', graphQLFormattedError);
 				return graphQLFormattedError;
