@@ -126,8 +126,12 @@ export class PropertyService {
 				},
 			])
 			.exec();
-		if (!result[0]?.list.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
+		if (!result[0]?.list.length) {
+			return {
+				list: [],
+				metaCounter: [{ total: 0 }],
+			};
+		}
 		return result[0];
 	}
 

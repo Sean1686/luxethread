@@ -9,6 +9,10 @@ import type { ObjectId } from 'mongoose';
 @InputType()
 export class PropertyInput {
 	@IsNotEmpty()
+	@Field(() => String)
+	_id!: ObjectId;
+
+	@IsNotEmpty()
 	@Field(() => PropertyType)
 	propertyType!: PropertyType;
 
