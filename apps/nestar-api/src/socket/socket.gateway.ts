@@ -2,21 +2,31 @@ import { Logger } from '@nestjs/common';
 import { OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'ws';
 import * as WebSocket from 'ws';
+import { AuthService } from '../components/auth/auth.service';
+import { Member } from '../libs/DTO/member/member';
+import * as url from 'url';
 
 interface MessagePayload {
 	event: string;
 	data: string;
+	memberData: Member | null;
 }
 
 interface InfoPayload {
 	event: string;
 	totalClients: number;
+	memberData: Member | null;
+	action: string;
 }
 
 @WebSocketGateway({ transport: ['websocket'], secure: false })
 export class SocketGateway implements OnGatewayInit {
 	private logger: Logger = new Logger('SocketEventsGateway');
 	private summaryClient: number = 0;
+	private clientAuthMap = new Map<WebSocket, Member | null>();
+	private messageList: MessagePayload[] = [];
+
+	constructor(private authService: AuthService) {}
 
 	@WebSocketServer()
 	server: Server | undefined;
@@ -25,26 +35,51 @@ export class SocketGateway implements OnGatewayInit {
 		this.logger.verbose(`WebSocket Server Initialized total: ${this.summaryClient}`);
 	}
 
-	handleConnection(client: WebSocket, ...args: any[]) {
-		this.summaryClient++;
-		this.logger.verbose(`Connection & total: [${this.summaryClient}] `);
-
-		const infoMsg: InfoPayload = {
-			event: 'info',
-			totalClients: this.summaryClient,
-		};
-		this.emitMessage(infoMsg);
+	private async retriveAuth(req: any): Promise<Member | null> {
+		try {
+			const parseUrl = url.parse(req.url, true);
+			const { token } = parseUrl.query;
+			console.log('token:', token);
+			return await this.authService.verifyToken(token as string);
+		} catch (err) {
+			return null;
+		}
 	}
 
-	handleDisconnect(client: WebSocket) {
-		this.summaryClient--;
-		this.logger.verbose(`Disconnection & total: [${this.summaryClient}] `);
+	public async handleConnection(client: WebSocket, req: any) {
+		const authMember = await this.retriveAuth(req);
+		this.clientAuthMap.set(client, authMember);
+		this.summaryClient++;
+
+		const clientNick: string = authMember?.memberNick ?? 'Guest';
+		this.logger.verbose(`Connection [${clientNick}] & total [${this.summaryClient}] `);
 
 		const infoMsg: InfoPayload = {
 			event: 'info',
 			totalClients: this.summaryClient,
+			memberData: authMember,
+			action: 'joined',
 		};
-    this.broadcastMessage(client, infoMsg)
+		this.emitMessage(infoMsg);
+		// CLIENT MESSAGES
+		client.send(JSON.stringify({ event: 'getMessages', list: this.messageList }));
+	}
+
+	public handleDisconnect(client: WebSocket) {
+		const authMember = this.clientAuthMap.get(client) ?? null;
+		this.summaryClient--;
+		this.clientAuthMap.delete(client);
+
+		const clientNick: string = authMember?.memberNick ?? 'Guest';
+		this.logger.verbose(`Disconnection [${clientNick}] & total [${this.summaryClient}] `);
+
+		const infoMsg: InfoPayload = {
+			event: 'info',
+			totalClients: this.summaryClient,
+			memberData: authMember,
+			action: 'left',
+		};
+		this.broadcastMessage(client, infoMsg);
 	}
 
 	private broadcastMessage(sender: WebSocket, message: InfoPayload | MessagePayload) {
@@ -57,9 +92,13 @@ export class SocketGateway implements OnGatewayInit {
 
 	@SubscribeMessage('message')
 	public async handleMessage(client: WebSocket, payload: string): Promise<void> {
-		const newMessage: MessagePayload = { event: 'message', data: payload };
+		const authMember = this.clientAuthMap.get(client) ?? null;
+		const newMessage: MessagePayload = { event: 'message', data: payload, memberData: authMember };
 
-		this.logger.verbose(`New message: ${payload}`);
+		const clientNick: string = authMember?.memberNick ?? 'Guest';
+		this.logger.verbose(`New message: [${clientNick}] ${payload}`);
+		this.messageList.push(newMessage);
+    if(this.messageList.length > 5) this.messageList.splice(0, this.messageList.length - 5);
 		this.emitMessage(newMessage);
 	}
 
@@ -71,3 +110,10 @@ export class SocketGateway implements OnGatewayInit {
 		});
 	}
 }
+
+/* 
+MESSAGE TARGET:
+1. Client (only client)
+2. Broadcast (except client)
+3. Emit (all clients)
+*/
