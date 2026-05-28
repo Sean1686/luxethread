@@ -4,7 +4,7 @@ import { Model, ObjectId } from 'mongoose';
 import { Properties, Property } from '../../libs/DTO/property/property';
 import {
 	AgentPropertiesInquiry,
-	AllPropetiesInquiry,
+	AllPropertiesInquiry,
 	OrdinaryInquiry,
 	PropertiesInquiry,
 	PropertyInput,
@@ -228,7 +228,7 @@ export class PropertyService {
 		return result;
 	}
 
-	public async getAllPropertiesByAdmin(input: AllPropetiesInquiry): Promise<Properties> {
+	public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
 		const { propertyStatus, propertyLocationList } = input.search;
 		const match: T = {};
 		const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
