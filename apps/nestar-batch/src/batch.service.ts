@@ -67,6 +67,6 @@ export class BatchService {
 	}
 
 	getHello(): string {
-		return 'Welcome to the Nestar Batch server!';
+		return 'Welcome to the Luxethread Batch server!';
 	}
 }

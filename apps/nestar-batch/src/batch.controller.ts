@@ -4,7 +4,7 @@ import { Cron, Timeout } from '@nestjs/schedule';
 import { BACHT_ROLLBACK, BACHT_TOP_AGENTS, BACHT_TOP_PROPERTIES } from './lib/config';
 
 @Controller()
-export class NestarBatchController {
+export class LuxethreadBatchController {
 	private logger: Logger = new Logger('BatchController');
 
 	constructor(private readonly batchService: BatchService) {}

@@ -10,7 +10,7 @@
   "monorepo": true,
   "root": "apps/nestar-api",
   "projects": {
-    "nestar-api": {
+    "luxethread-api": {
       "type": "application",
       "root": "apps/nestar-api",
       "entryFile": "main",
@@ -19,7 +19,7 @@
         "tsConfigPath": "apps/nestar-api/tsconfig.app.json"
       }
     },
-    "nestar-batch": {
+    "luxethread-batch": {
       "type": "application",
       "root": "apps/nestar-batch",
       "entryFile": "main",

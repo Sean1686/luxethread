@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NestarBatchController } from './batch.controller';
+import { LuxethreadBatchController } from './batch.controller';
 import { BatchService } from './batch.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
@@ -18,7 +18,7 @@ import MemberSchema from '../../nestar-api/src/schemas/Member.model';
 			{ name: 'Member', schema: MemberSchema },
 		]),
 	],
-	controllers: [NestarBatchController],
+	controllers: [LuxethreadBatchController],
 	providers: [BatchService],
 })
 export class BatchModule {}
