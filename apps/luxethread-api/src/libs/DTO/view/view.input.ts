@@ -12,7 +12,7 @@ export class ViewInput {
     memberId!: ObjectId;
 
     @IsNotEmpty()
-    @Field(() => ViewGroup)
+    @Field(() => String)
     viewRefId!: ObjectId;
 
     @IsNotEmpty()

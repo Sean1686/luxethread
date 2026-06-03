@@ -1,7 +1,7 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { Cron, Timeout } from '@nestjs/schedule';
-import { BACHT_ROLLBACK, BACHT_TOP_AGENTS, BACHT_TOP_PROPERTIES } from './lib/config';
+import { BACHT_ROLLBACK, BACHT_TOP_AGENTS, BACHT_TOP_PRODUCTS } from './lib/config';
 
 @Controller()
 export class LuxethreadBatchController {
@@ -25,12 +25,12 @@ export class LuxethreadBatchController {
 		}
 	}
 
-	@Cron('20 00 01 * * *', { name: BACHT_TOP_PROPERTIES })
-	public async batchTopProperties() {
+	@Cron('20 00 01 * * *', { name: BACHT_TOP_PRODUCTS })
+	public async batchTopProducts() {
 		try {
-			this.logger['context'] = BACHT_TOP_PROPERTIES;
+			this.logger['context'] = BACHT_TOP_PRODUCTS;
 			this.logger.debug('EXECUTED!');
-			await this.batchService.batchTopProperties();
+			await this.batchService.batchTopProducts();
 		} catch (err) {
 			this.logger.error(err);
 		}

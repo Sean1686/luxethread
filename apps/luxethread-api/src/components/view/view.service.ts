@@ -4,8 +4,8 @@ import { Model, ObjectId } from 'mongoose';
 import { View } from '../../libs/DTO/view/view';
 import { ViewInput } from '../../libs/DTO/view/view.input';
 import { T } from '../../libs/types/common';
-import { OrdinaryInquiry } from '../../libs/DTO/property/property.input';
-import { Properties } from '../../libs/DTO/property/property';
+import { OrdinaryInquiry } from '../../libs/DTO/product/product.input';
+import { Products } from '../../libs/DTO/product/product';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { lookupVisit  } from '../../libs/config';
 
@@ -28,10 +28,10 @@ export class ViewService {
 		return await this.viewModel.findOne(search).exec();
 	}
 
-	public async getVisitedProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
+	public async getVisitedProducts(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
 		const { page, limit } = input;
 		const match: T = {
-			viewGroup: ViewGroup.PROPERTY,
+			viewGroup: ViewGroup.PRODUCT,
 			memberId: memberId,
 		};
 
@@ -41,20 +41,20 @@ export class ViewService {
 				{ $sort: { updatedAt: -1 } },
 				{
 					$lookup: {
-						from: 'properties',
+						from: 'products',
 						localField: 'viewRefId',
 						foreignField: '_id',
-						as: 'visitedProperty',
+						as: 'visitedProduct',
 					},
 				},
-				{ $unwind: '$visitedProperty' },
+				{ $unwind: '$visitedProduct' },
 				{
 					$facet: {
 						list: [
 							{ $skip: (page - 1) * limit },
 							{ $limit: limit },
 							lookupVisit,
-							{ $unwind: '$visitedProperty.memberData' },
+							{ $unwind: '$visitedProduct.memberData' },
 						],
 						metaCounter: [{ $count: 'total' }],
 					},
@@ -62,8 +62,8 @@ export class ViewService {
 			])
 			.exec();
 		console.log('data:', data);
-		const result: Properties = { list: [], metaCounter: data[0]?.metaCounter };
-		result.list = data[0].list.map((ele) => ele.visitedProperty);
+		const result: Products = { list: [], metaCounter: data[0]?.metaCounter };
+		result.list = data[0].list.map((ele) => ele.visitedProduct);
 		console.log('result:', result);
 		return result;
 	}

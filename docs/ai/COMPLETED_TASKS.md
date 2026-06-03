@@ -1,6 +1,36 @@
 # Completed Tasks
 
-## Session Summary
+## Latest Session Summary
+
+This session completed the hard backend migration from real-estate `Property` concepts to Luxethread clothing `Product` concepts. `MemberType.USER`, `MemberType.AGENT`, and `MemberType.ADMIN` were preserved unchanged, and `MemberType.AGENT` remains the product owner role.
+
+## Latest Completed Refactors
+
+| Area | Change |
+| --- | --- |
+| Product colors | Replaced single `productColor` with required `productColors` so one product can support multiple colors. |
+| Product sizes | Replaced single `productSize` with required `productSizes` so one product can support multiple sizes. |
+| Product origin | Added required `productOrigin` field for values like `Turkey` or `Italy`; frontend should display it as `Made in ${productOrigin}`. |
+| Catalog module | Replaced property resolver/service/module surface with product resolver/service/module surface. |
+| DTOs and enums | Replaced property DTOs/enums with product DTOs/enums for category, type, size, color, material, and fit. |
+| Mongoose schema | Replaced `Property` schema with `Product` schema using collection `products`. |
+| GraphQL operations | Added product operations including `createProduct`, `getProduct`, `listProducts`, `updateProduct`, agent product operations, admin product operations, and `likeTargetProduct`. |
+| Social modules | Retargeted likes, views, comments, and notifications from property groups to product groups. |
+| Member counters | Renamed `memberProperties` to `memberProducts`. |
+| Batch jobs | Replaced top-property ranking with top-product ranking and updated agent rank to use `memberProducts`. |
+| Upload/source references | Changed product upload/source examples from `property` to `product`. |
+| Build config | Updated Nest build/start paths from stale `apps/nestar-*` paths to `apps/luxethread-*`. |
+
+## Latest Validation Status
+
+| Command | Status | Notes |
+| --- | --- | --- |
+| `npx tsc -p apps/luxethread-api/tsconfig.app.json --noEmit` | Passed | API type-check completed after replacing `productColor` with `productColors`. |
+| `npx tsc -p apps/luxethread-batch/tsconfig.app.json --noEmit` | Passed | Batch type-check completed after replacing `productColor` with `productColors`. |
+| `npm run build` | Passed after elevated rerun | First run hit `EPERM` cleaning `dist/apps/luxethread-api/main.js`; elevated rerun compiled successfully. |
+| `npm run lint` | Not run | Lint uses ESLint `--fix`, so it was skipped to avoid unrelated rewrites. |
+
+## Previous Session Summary
 
 This session completed analysis, planning, and a safe branding-layer refactor. No business/domain migration from real estate to Petoria has been implemented yet.
 

@@ -5,8 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
-import PropertySchema from '../../nestar-api/src/schemas/Property.model';
-import MemberSchema from '../../nestar-api/src/schemas/Member.model';
+import ProductSchema from '../../luxethread-api/src/schemas/Product.model';
+import MemberSchema from '../../luxethread-api/src/schemas/Member.model';
 
 @Module({
 	imports: [
@@ -14,7 +14,7 @@ import MemberSchema from '../../nestar-api/src/schemas/Member.model';
 		DatabaseModule,
 		ScheduleModule.forRoot(),
 		MongooseModule.forFeature([
-			{ name: 'Property', schema: PropertySchema },
+			{ name: 'Product', schema: ProductSchema },
 			{ name: 'Member', schema: MemberSchema },
 		]),
 	],

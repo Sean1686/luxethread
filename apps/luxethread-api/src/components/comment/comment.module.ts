@@ -8,8 +8,8 @@ import { Member } from '../../libs/DTO/member/member';
 import { MemberModule } from '../member/member.module';
 import { View } from '../../libs/DTO/view/view';
 import { ViewModule } from '../view/view.module';
-import { Property } from '../../libs/DTO/property/property';
-import { PropertyModule } from '../property/property.module';
+import { Product } from '../../libs/DTO/product/product';
+import { ProductModule } from '../product/product.module';
 import { BoardArticleModule } from '../board-article/board-article.module';
 
 @Module({
@@ -22,7 +22,7 @@ import { BoardArticleModule } from '../board-article/board-article.module';
             ]),
             AuthModule,
             MemberModule,
-            PropertyModule,
+            ProductModule,
             BoardArticleModule,
           ],
   providers: [CommentResolver, CommentService]
