@@ -29,7 +29,6 @@ export class MemberResolver {
 	@Mutation(() => Member)
 	public async login(@Args('input') input: LoginInput): Promise<Member> {
 		console.log('Mutation login called');
-		console.log('Input received:', input);
 		return await this.memberService.login(input);
 	}
 

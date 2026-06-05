@@ -18,7 +18,7 @@ import { lookup } from 'dns';
 import { lookupMemberLiked } from '../../libs/config';
 
 @Injectable()
-export class MemberService {
+export class 	MemberService {
 	constructor(
 		@InjectModel('Member') private readonly memberModel: Model<Member>,
 		@InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
