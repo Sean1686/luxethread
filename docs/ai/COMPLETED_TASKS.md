@@ -8,6 +8,7 @@ This session completed the hard backend migration from real-estate `Property` co
 
 | Area | Change |
 | --- | --- |
+| Visited products | Fixed `getVisited` view handling by making view existence and unique indexing group-aware, adding a legacy duplicate-key fallback for old view rows, and returning stable empty metadata. |
 | Product colors | Replaced single `productColor` with required `productColors` so one product can support multiple colors. |
 | Product sizes | Replaced single `productSize` with required `productSizes` so one product can support multiple sizes. |
 | Product origin | Added required `productOrigin` field for values like `Turkey` or `Italy`; frontend should display it as `Made in ${productOrigin}`. |
@@ -25,6 +26,9 @@ This session completed the hard backend migration from real-estate `Property` co
 
 | Command | Status | Notes |
 | --- | --- | --- |
+| `npx tsc -p apps/luxethread-api/tsconfig.app.json --noEmit` | Passed | API type-check completed after fixing visited product view handling. |
+| `npx tsc -p apps/luxethread-batch/tsconfig.app.json --noEmit` | Passed | Batch type-check completed after fixing visited product view handling. |
+| `npm run build` | Passed after elevated rerun | First run hit `EPERM` cleaning `dist/apps/luxethread-api/main.js`; elevated rerun compiled successfully after fixing visited product view handling. |
 | `npx tsc -p apps/luxethread-api/tsconfig.app.json --noEmit` | Passed | API type-check completed after replacing `productColor` with `productColors`. |
 | `npx tsc -p apps/luxethread-batch/tsconfig.app.json --noEmit` | Passed | Batch type-check completed after replacing `productColor` with `productColors`. |
 | `npm run build` | Passed after elevated rerun | First run hit `EPERM` cleaning `dist/apps/luxethread-api/main.js`; elevated rerun compiled successfully. |
@@ -86,3 +90,14 @@ This session completed analysis, planning, and a safe branding-layer refactor. N
 | Backend domain | Still real-estate |
 | Frontend migration | Planned only; no frontend source in workspace |
 | Data migration | Not started |
+
+## Frontend Product Migration Session - 2026-06-07
+
+- Migrated the Next.js frontend GraphQL contract to Luxethread product operations and product fields while preserving Apollo integration.
+- Added /product and /product/detail pages plus redirect compatibility for /property and /property/detail.
+- Added admin /_admin/products with /_admin/properties redirect compatibility.
+- Added frontend product DTO/enums and compatibility wrappers for existing incremental UI components.
+- Updated member product counter usage and product social group enum compatibility.
+- Validation: yarn tsc --noEmit passed; yarn build passed after elevated rerun because Next worker spawn was blocked in sandbox.
+- Note: some older component/file names and compatibility aliases remain intentionally for incremental migration; UI cleanup can continue in later passes.
+

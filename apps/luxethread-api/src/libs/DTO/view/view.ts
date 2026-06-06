@@ -10,7 +10,7 @@ export class View {
 	@Field(() => ViewGroup)
 	viewGroup: ViewGroup | undefined;
 
-	@Field(() => ViewGroup)
+	@Field(() => String)
 	viewRefId: ObjectId | undefined;
 
     @Field(() => String)

@@ -7,7 +7,7 @@ import { T } from '../../libs/types/common';
 import { OrdinaryInquiry } from '../../libs/DTO/product/product.input';
 import { Products } from '../../libs/DTO/product/product';
 import { ViewGroup } from '../../libs/enums/view.enum';
-import { lookupVisit  } from '../../libs/config';
+import { lookupVisit } from '../../libs/config';
 
 @Injectable()
 export class ViewService {
@@ -17,13 +17,29 @@ export class ViewService {
 		const viewExist = await this.checkViewExistence(input);
 		if (!viewExist) {
 			console.log(' - New View Insert - ');
-			return await this.viewModel.create(input);
+			try {
+				return await this.viewModel.create(input);
+			} catch (err) {
+				if ((err as { code?: number }).code !== 11000) throw err;
+
+				return await this.viewModel
+					.findOneAndUpdate(
+						{
+							memberId: input.memberId,
+							viewRefId: input.viewRefId,
+							viewGroup: { $nin: Object.values(ViewGroup) },
+						},
+						{ $set: { viewGroup: input.viewGroup } },
+						{ new: true },
+					)
+					.exec();
+			}
 		} else return null;
 	}
 
 	private async checkViewExistence(input: ViewInput): Promise<View | null> {
-		const { memberId, viewRefId } = input;
-		const search: T = { memberId: memberId, viewRefId: viewRefId };
+		const { memberId, viewRefId, viewGroup } = input;
+		const search: T = { memberId, viewRefId, viewGroup };
 
 		return await this.viewModel.findOne(search).exec();
 	}
@@ -62,8 +78,8 @@ export class ViewService {
 			])
 			.exec();
 		console.log('data:', data);
-		const result: Products = { list: [], metaCounter: data[0]?.metaCounter };
-		result.list = data[0].list.map((ele) => ele.visitedProduct);
+		const result: Products = { list: [], metaCounter: data[0]?.metaCounter ?? [{ total: 0 }] };
+		result.list = data[0]?.list.map((ele) => ele.visitedProduct) ?? [];
 		console.log('result:', result);
 		return result;
 	}
